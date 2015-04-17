@@ -41,13 +41,31 @@
 
         <!--TitlePanel 包含应用程序的名称和页标题-->
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="我的应用程序" Style="{StaticResource PhoneTextNormalStyle}" Margin="12,0"/>
-            <TextBlock Text="页面名称" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+            <TextBlock Text="Windows Phone HTTP Server" Style="{StaticResource PhoneTextNormalStyle}" Margin="12,0"/>
         </StackPanel>
 
         <!--ContentPanel - 在此处放置其他内容-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="80"></RowDefinition>
+                <RowDefinition Height="80"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBox Text="{Binding Path=Port, Mode=TwoWay}" Grid.Row="0" Grid.Column="0" InputScope="Number"/>
+            <Button x:Name="btnRunStop"  Grid.Row="0" Grid.Column="1" Content="Stop" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Button_Click"/>
+            <Button Grid.Row="0" Grid.Column="2" Content="Clear" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Clear_Click"/>
+            <CheckBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="{Binding Path=KeepAlive, Mode=TwoWay}" Content="KeepAlive" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
+            
+            
+            <ListBox ItemsSource="{Binding Logs}" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"></ListBox>
         </Grid>
 
         <!--取消注释，以显示对齐网格，从而帮助确保
@@ -60,3 +78,4 @@
     </Grid>
 
 </phone:PhoneApplicationPage>
+    

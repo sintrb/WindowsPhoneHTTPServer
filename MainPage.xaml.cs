@@ -9,38 +9,152 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using HTTPServer.Resources;
 
+using System.ComponentModel;
+using System.Runtime.Serialization;
+using System.Diagnostics;
+using System.Collections.ObjectModel;
+
+using System.Text;
+
 namespace HTTPServer
 {
-    public partial class MainPage : PhoneApplicationPage
+    public partial class MainPage : PhoneApplicationPage, INotifyPropertyChanged
     {
+        Sin.Http.Server.Server Server = new Sin.Http.Server.Server() { Port = 8080 }; // Create Server at port 8080
+
+        ObservableCollection<String> _Logs = new ObservableCollection<string>();
+
+        public ObservableCollection<String> Logs
+        {
+            get
+            {
+                return _Logs;
+            }
+        }
+
         // 构造函数
         public MainPage()
         {
             InitializeComponent();
 
-            // 用于本地化 ApplicationBar 的示例代码
-            //BuildLocalizedApplicationBar();
+            this.DataContext = this;
 
-            new Sin.Http.Server.Server()
+            
+            // Config Router
+            // When /
+            Server.On("^/$", cxt =>
             {
-                Port = 9999
-            }.Start();
+                // Return a simple page
+                String html = @"
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <meta charset='utf-8'>
+                <title>Windows Phone HTTP Server</title>
+                </head>
+                <body>
+                <h1>Welcome to Windows Phone HTTP Server</h1>
+                <p>It's a simple web page, if you can saw this page, it's mean your Windows Phone was provided a HTTP service correct.<a href='/hi'>Say hi~~</a></p>
+                    <a href='https://github.com/sintrb/WindowsPhoneHTTPServer'>https://github.com/sintrb/WindowsPhoneHTTPServer</a>
+                </body>
+                </html>
+                ";
+                cxt.Response.Body = Encoding.UTF8.GetBytes(html);
+
+                LogReq(cxt);
+            });
+
+            // When /hi
+            Server.On("^/hi$", cxt =>
+            {
+                cxt.Response.Body = Encoding.UTF8.GetBytes("Hello World.....");
+
+                LogReq(cxt);
+            });
+
+            // Start
+            Server.Start();
         }
 
-        // 用于生成本地化 ApplicationBar 的示例代码
-        //private void BuildLocalizedApplicationBar()
-        //{
-        //    // 将页面的 ApplicationBar 设置为 ApplicationBar 的新实例。
-        //    ApplicationBar = new ApplicationBar();
+        private void AddLog(String log)
+        {
+            _Logs.Add(DateTime.Now.ToString("hh:mm:ss ") + log);
+        }
 
-        //    // 创建新按钮并将文本值设置为 AppResources 中的本地化字符串。
-        //    ApplicationBarIconButton appBarButton = new ApplicationBarIconButton(new Uri("/Assets/AppBar/appbar.add.rest.png", UriKind.Relative));
-        //    appBarButton.Text = AppResources.AppBarButtonText;
-        //    ApplicationBar.Buttons.Add(appBarButton);
+        private void LogReq(Sin.Http.Server.Context cxt)
+        {
+            try
+            {
+                String s = cxt.Request.Header.Method + " " + cxt.Request.Header.Path + " " + cxt.Response.Header.Code + " " + cxt.Response.Header.Status;
+                this.Dispatcher.BeginInvoke(() =>
+                {
+                    AddLog(s);
+                });
+            }
+            catch { }
+        }
 
-        //    // 使用 AppResources 中的本地化字符串创建新菜单项。
-        //    ApplicationBarMenuItem appBarMenuItem = new ApplicationBarMenuItem(AppResources.AppBarMenuItemText);
-        //    ApplicationBar.MenuItems.Add(appBarMenuItem);
-        //}
+        public bool KeepAlive
+        {
+            get
+            {
+                return Server.KeepAlive;
+            }
+            set
+            {
+                Server.KeepAlive = value;
+            }
+        }
+
+        public String Port
+        {
+            get
+            {
+                return "" + Server.Port;
+            }
+            set
+            {
+                try
+                {
+                    Server.Port = Int32.Parse(value);
+                }
+                catch { }
+            }
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void NotifyPropertyChanged(params String[] propertyNames)
+        {
+            if (null != PropertyChanged)
+            {
+                foreach (String propertyName in propertyNames)
+                {
+                    //Debug.WriteLine("NotifyPropertyChanged " + propertyName);
+                    PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                }
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (Server.Status == Sin.Http.Server.ServerStatus.Running)
+            {
+                AddLog("Stop");
+                Server.Stop();
+                btnRunStop.Content = "Start";
+            }
+            else
+            {
+                AddLog("Start");
+                Server.Start();
+                btnRunStop.Content = "Stop";
+            }
+        }
+
+        private void Clear_Click(object sender, RoutedEventArgs e)
+        {
+            _Logs.Clear();
+        }
     }
 }
