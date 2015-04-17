@@ -10,5 +10,7 @@ namespace Sin.Http.Client
     {
         public RequestHeader Header { get; set; }
         public byte[] Body { get; set; }
+
+        public System.Net.Sockets.Socket Client { get; set; }
     }
 }

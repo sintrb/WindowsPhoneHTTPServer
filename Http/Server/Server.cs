@@ -37,7 +37,7 @@ namespace Sin.Http.Server
         public int Port {get;set;}
         public int BufferSize { get; set; }
         public int BackLog { get; set; }
-
+        public bool KeepAlive { get; set; }
 
         public ServerStatus _Status;
 
@@ -60,6 +60,7 @@ namespace Sin.Http.Server
             Port = 8080;
             BufferSize = 1024;
             BackLog = 16;
+            KeepAlive = true;
         }
 
 
@@ -94,12 +95,9 @@ namespace Sin.Http.Server
             if (e.LastOperation == SocketAsyncOperation.Send)
             {
                 // Send Completed
-                Debug.WriteLine(key + " S:" + e.BytesTransferred);
-
-                // Reset Buffer To Receive
-                //e.SetBuffer(new byte[BufferSize], 0, BufferSize);
-
-                e.AcceptSocket.Close();
+                // Debug.WriteLine(key + " S:" + e.BytesTransferred);
+                if(KeepAlive)
+                    e.AcceptSocket.Close();
             }
         }
 
@@ -129,7 +127,7 @@ namespace Sin.Http.Server
                         }
                         if (e.LastOperation == SocketAsyncOperation.Receive)
                         {
-                            Debug.WriteLine(key + " R:" + e.BytesTransferred);
+                            //Debug.WriteLine(key + " R:" + e.BytesTransferred);
 
                             switch (co.Status)
                             {
@@ -157,7 +155,7 @@ namespace Sin.Http.Server
 
                                             Client.RequestHeader Header = new Client.RequestHeader(Encoding.UTF8.GetString(bytes, 0, nstart));
                                             co.Header = Header;
-                                            co.Status = Header.ContentLength > 0 ? ClientStatus.WaitBody : ClientStatus.Completed;
+                                            co.Status = co.Buffer.Count < co.Header.ContentLength ? ClientStatus.WaitBody : ClientStatus.Completed;
                                         }
                                         break;
                                     }
@@ -183,6 +181,7 @@ namespace Sin.Http.Server
                                 ProcessRequest(co);
                                 co.Header = null;
                                 co.Status = ClientStatus.WaitHeader;
+                                co.Buffer.Clear();
                             }
                             soc.ReceiveAsync(co.EventArgs);
                         }
@@ -217,7 +216,7 @@ namespace Sin.Http.Server
                 }
             }
 
-            if (ServerSocket != null && ServerSocket.LocalEndPoint == null)
+            if (ServerSocket == null || ServerSocket.LocalEndPoint == null)
             {
                 Clients.Clear();
 
@@ -227,7 +226,7 @@ namespace Sin.Http.Server
                 Debug.WriteLine(String.Format("Listen at {0}:{1}", Address, Port));
                 SocketAsyncEventArgs_AcceptCompleted(null, null);
             }
-            else
+            else if (ServerSocket != null)
             {
                 System.Net.Sockets.SocketAsyncEventArgs saea = new System.Net.Sockets.SocketAsyncEventArgs();
                 saea.Completed += SocketAsyncEventArgs_AcceptCompleted;
@@ -240,11 +239,14 @@ namespace Sin.Http.Server
             Client.Request Req = new Client.Request()
             {
                 Header = co.Header,
-                Body = co.Buffer.Count>0?co.Buffer.ToArray():null
+                Body = co.Buffer.Count>0?co.Buffer.ToArray():null,
+                Client = co.EventArgs.AcceptSocket
             };
             Response Res = HandleRequest(Req);
 
             Res.Header.ContentLength = Res.Body != null ? Res.Body.Length : 0;
+            Res.Header["Connection"] = KeepAlive ? "KeepAlive" : "Close";
+
 
             List<byte> buf = new List<byte>();
             buf.AddRange(Encoding.UTF8.GetBytes(Res.Header.ToHttpHeader()));
@@ -265,6 +267,9 @@ namespace Sin.Http.Server
 
         virtual public Response HandleRequest(Client.Request Req)
         {
+            if (Req.Body != null)
+                Debug.WriteLine("B:" + Encoding.UTF8.GetString(Req.Body, 0, Req.Body.Length));
+
             Response Res = new Response()
             {
                 Header = new ResponseHeader()
@@ -276,8 +281,22 @@ namespace Sin.Http.Server
             };
             Res.Header["Server"] = "WPServer";
             Res.Header["Connection"] = "Keep-Alive";
-            
-            Res.Body = Encoding.UTF8.GetBytes("<html><body>Hello World~~~</body></html>");
+            String html =
+@"
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8'>
+<title>Windows Phone HTTP Server</title>
+</head>
+<body>
+<h1>Welcome to Windows Phone HTTP Server</h1>
+<p>It's a simple web page, if you can saw this page, it's mean your Windows Phone was provided a HTTP service correct.</p>
+    <a href='https://github.com/sintrb/WindowsPhoneHTTPServer'>https://github.com/sintrb/WindowsPhoneHTTPServer</a>
+</body>
+</html>
+";
+            Res.Body = Encoding.UTF8.GetBytes(html);
             return Res;
         }
     }
