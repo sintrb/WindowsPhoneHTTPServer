@@ -2,7 +2,7 @@
 A Simple HTTP Server Framework &amp; Demo for Windows Phone 8
 
 
-##### How to use it
+#### How to use it
 ```C#
 // Create Server at port 8080
 Sin.Http.Server.Server Server = new Sin.Http.Server.Server() { Port = 8080 };
@@ -40,3 +40,8 @@ Server.On("^/hi$", cxt =>
 // Start it
 Server.Start();
 ```
+
+Then, use your PC broswer to open the url http://your-wp-ip:8080/ and Enjoy it.
+
+Maybe you can add other function to it, please fork it first.
+
