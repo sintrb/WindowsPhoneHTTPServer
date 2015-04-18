@@ -320,6 +320,7 @@ namespace Sin.Http.Server
                 }
             };
             Res.Header["Server"] = "WPServer";
+            Res.Header["Content-Type"] = "text/html";
 
             Context cxt = new Context()
             {
@@ -339,14 +340,14 @@ namespace Sin.Http.Server
                 {
                     Res.Header.Code = 500;
                     Res.Header.Status = "Server Error";
-                    Res.Body = Encoding.UTF8.GetBytes(e.Message);
+                    Res.Body = Encoding.UTF8.GetBytes(String.Format("<html><body><pre>{0}</pre></body></html>", e.Message + "\r\n" + e.StackTrace));
                 }
             }
             else
             {
                 Res.Header.Code = 404;
                 Res.Header.Status = "Not Found";
-                Res.Body = Encoding.UTF8.GetBytes("404 Not Found");
+                Res.Body = Encoding.UTF8.GetBytes(String.Format("<html><body><center>{0}</center></body></html>", "404 Not Found"));
             }
             return cxt.Response;
         }
