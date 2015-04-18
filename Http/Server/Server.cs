@@ -331,7 +331,16 @@ namespace Sin.Http.Server
             RequestHandler rh = GetHandler(Req.Header.Path);
             if (rh != null)
             {
-                rh(cxt);
+                try
+                {
+                    rh(cxt);
+                }
+                catch (Exception e)
+                {
+                    Res.Header.Code = 500;
+                    Res.Header.Status = "Server Error";
+                    Res.Body = Encoding.UTF8.GetBytes(e.Message);
+                }
             }
             else
             {
