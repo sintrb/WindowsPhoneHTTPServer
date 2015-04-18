@@ -12,6 +12,12 @@ namespace Sin.Http.Server
         public byte[] Body { get; set; }
 
 
+        /// <summary>
+        /// Response Error
+        /// </summary>
+        /// <param name="code">Status code</param>
+        /// <param name="status">Status</param>
+        /// <param name="error">Error information(default code+status)</param>
         public void ResponseError(int code, String status, String error = null)
         {
             Header.Code = code;
