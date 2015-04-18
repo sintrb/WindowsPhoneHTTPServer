@@ -338,16 +338,12 @@ namespace Sin.Http.Server
                 }
                 catch (Exception e)
                 {
-                    Res.Header.Code = 500;
-                    Res.Header.Status = "Server Error";
-                    Res.Body = Encoding.UTF8.GetBytes(String.Format("<html><body><pre>{0}</pre></body></html>", e.Message + "\r\n" + e.StackTrace));
+                    Res.ResponseError(500, "Server Error", String.Format("<html><header><title>Server Error</title></header><body><pre>{0}</pre></body></html>", e.Message + "\r\n" + e.StackTrace));
                 }
             }
             else
             {
-                Res.Header.Code = 404;
-                Res.Header.Status = "Not Found";
-                Res.Body = Encoding.UTF8.GetBytes(String.Format("<html><body><center>{0}</center></body></html>", "404 Not Found"));
+                Res.ResponseError(404, "Not Found");
             }
             return cxt.Response;
         }
