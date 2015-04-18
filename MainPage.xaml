@@ -65,7 +65,7 @@
 
             
             
-            <ListBox ItemsSource="{Binding Logs}" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"></ListBox>
+            <ListBox ItemsSource="{Binding Logs}" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4"></ListBox>
         </Grid>
 
         <!--取消注释，以显示对齐网格，从而帮助确保

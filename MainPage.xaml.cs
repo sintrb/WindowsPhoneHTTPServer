@@ -72,6 +72,40 @@ namespace HTTPServer
                 LogReq(cxt);
             });
 
+            // When /err
+            Server.On("^/err$", cxt =>
+            {
+                String s = "0x";
+                // raise a exception
+                int i = int.Parse(s);
+                LogReq(cxt);
+            });
+
+
+
+            Dictionary<String, byte[]> Storages = new Dictionary<string, byte[]>();
+            // When /storage/
+            Server.On("^/storage/", cxt =>
+            {
+                if (cxt.Request.Header.Method == "GET")
+                {
+                    if (Storages.ContainsKey(cxt.Request.Header.Path))
+                    {
+                        cxt.Response.Body = Storages[cxt.Request.Header.Path];
+                    }
+                    else
+                    {
+                        cxt.Response.ResponseError(404, "Not Found");
+                    }
+                }
+                else
+                {
+                    Storages[cxt.Request.Header.Path] = cxt.Request.Body;
+                }
+
+                LogReq(cxt);
+            });
+
             // Start
             Server.Start();
         }
