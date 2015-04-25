@@ -36,6 +36,16 @@ Server.On("^/hi$", cxt =>
     cxt.Response.Body = Encoding.UTF8.GetBytes("Hello World.....");
 });
 
+//  Create a static file handler
+// the files place at Assets\gh-pages
+Sin.Http.Server.StaticFileHandler sfh = new Sin.Http.Server.StaticFileHandler()
+{
+    Prefix = "Assets\\gh-pages"
+};
+
+// handle all other request as file get request
+Server.On("(.*)", sfh);
+
 // at last
 // Start it
 Server.Start();
