@@ -8,6 +8,8 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 
+using System.Text.RegularExpressions;
+
 namespace Sin.Http.Server
 {
     public enum ClientStatus
@@ -34,9 +36,21 @@ namespace Sin.Http.Server
     {
         public Client.Request Request;
         public Response Response;
+        public List<String> PathArgs;
     }
-
+ 
     public delegate void RequestHandler(Context cxt);
+
+    public class WebHandler
+    {
+        public RequestHandler handler { get; set; }
+    }
+    public class PathHandlerItem
+    {
+        public String Path { get; set; }
+        public Regex PathReg { get; set; }
+        public WebHandler Handler { get; set; }
+    }
     public class Server
     {
         public String Address { get; set; }
@@ -287,22 +301,46 @@ namespace Sin.Http.Server
         }
 
 
-        private Dictionary<String, RequestHandler> Handlers = new Dictionary<string, RequestHandler>();
+        private List<PathHandlerItem> Handlers = new List<PathHandlerItem>();
         public void On(String Path, RequestHandler handler)
         {
-            Handlers[Path] = handler;
+            On(Path, new WebHandler() { handler = handler });
         }
-
-        virtual public RequestHandler GetHandler(String Path)
+        public void On(String Path, WebHandler handler)
         {
-            if (Handlers.ContainsKey(Path))
-                return Handlers[Path];
-            foreach (var kv in Handlers)
+            Regex reg = null;
+            try
             {
-                System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(kv.Key);
-                if (r.IsMatch(Path))
+                reg = new Regex(Path);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(String.Format("Warning, is not a Regex: {0}\r\n{1}", Path, e));
+            }
+
+            PathHandlerItem phi = new PathHandlerItem()
+            {
+                Path = Path,
+                PathReg = reg,
+                Handler = handler
+            };
+            AddHandler(phi);
+        }
+        public void AddHandler(PathHandlerItem phi)
+        {
+            if (GetHandler(phi.Path) != null)
+            {
+                Debug.WriteLine(String.Format("Warning, already has handler for path: {0}", phi.Path));
+            }
+            Handlers.Add(phi);
+        }
+        virtual public PathHandlerItem GetHandler(String Path)
+        {
+            foreach (PathHandlerItem phi in Handlers)
+            {
+                if (phi.Path == Path || (phi.PathReg != null && phi.PathReg.IsMatch(Path)))
                 {
-                    return kv.Value;
+                    return phi;
                 }
             }
             return null;
@@ -329,12 +367,37 @@ namespace Sin.Http.Server
             };
 
 
-            RequestHandler rh = GetHandler(Req.Header.Path);
-            if (rh != null)
+            PathHandlerItem phi = GetHandler(Req.Header.Path);
+            if (phi != null)
             {
+                if (phi.PathReg != null)
+                {
+                    cxt.PathArgs = new List<string>();
+                    Match m = phi.PathReg.Match(Req.Path);
+                    if (m.Success)
+                    {
+                        foreach (Group g in m.Groups)
+                        {
+                            cxt.PathArgs.Add(g.Value);
+                        }
+                    }
+                }
                 try
                 {
-                    rh(cxt);
+                    System.Reflection.MethodInfo mi = phi.Handler.GetType().GetMethod(Req.Method);
+                    if (mi != null)
+                    {
+                        mi.Invoke(phi.Handler, new object[] { cxt });
+                    }
+                    else if (phi.Handler.handler != null)
+                    {
+                        // 
+                        phi.Handler.handler(cxt);
+                    }
+                    else
+                    {
+                        throw new Exception(String.Format("No handler for {0} {1}", Req.Method, Req.Path));
+                    }
                 }
                 catch (Exception e)
                 {

@@ -97,6 +97,7 @@
     <Compile Include="Http\Client\Request.cs" />
     <Compile Include="Http\Header.cs" />
     <Compile Include="Http\Base.cs" />
+    <Compile Include="Http\Server\Handlers.cs" />
     <Compile Include="Http\Server\Response.cs" />
     <Compile Include="Http\Server\ResponseHeader.cs" />
     <Compile Include="Http\Server\Server.cs" />
@@ -123,6 +124,22 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\gh-pages\fonts\opensans-bold-webfont.eot" />
+    <Content Include="Assets\gh-pages\fonts\opensans-bold-webfont.ttf" />
+    <Content Include="Assets\gh-pages\fonts\opensans-bold-webfont.woff" />
+    <Content Include="Assets\gh-pages\fonts\opensans-bolditalic-webfont.eot" />
+    <Content Include="Assets\gh-pages\fonts\opensans-bolditalic-webfont.ttf" />
+    <Content Include="Assets\gh-pages\fonts\opensans-bolditalic-webfont.woff" />
+    <Content Include="Assets\gh-pages\fonts\opensans-extrabold-webfont.eot" />
+    <Content Include="Assets\gh-pages\fonts\opensans-extrabold-webfont.ttf" />
+    <Content Include="Assets\gh-pages\fonts\opensans-extrabold-webfont.woff" />
+    <Content Include="Assets\gh-pages\fonts\opensans-italic-webfont.eot" />
+    <Content Include="Assets\gh-pages\fonts\opensans-italic-webfont.ttf" />
+    <Content Include="Assets\gh-pages\fonts\opensans-italic-webfont.woff" />
+    <Content Include="Assets\gh-pages\fonts\opensans-regular-webfont.eot" />
+    <Content Include="Assets\gh-pages\fonts\opensans-regular-webfont.ttf" />
+    <Content Include="Assets\gh-pages\fonts\opensans-regular-webfont.woff" />
+    <Content Include="Assets\gh-pages\params.json" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
@@ -133,6 +150,41 @@
     <Content Include="Assets\ApplicationIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\gh-pages\fonts\opensans-bold-webfont.svg" />
+    <Content Include="Assets\gh-pages\fonts\opensans-bolditalic-webfont.svg" />
+    <Content Include="Assets\gh-pages\fonts\opensans-extrabold-webfont.svg" />
+    <Content Include="Assets\gh-pages\fonts\opensans-italic-webfont.svg" />
+    <Content Include="Assets\gh-pages\fonts\opensans-regular-webfont.svg" />
+    <Content Include="Assets\gh-pages\images\bg-ramp.jpg" />
+    <Content Include="Assets\gh-pages\images\blockquote-gfx-2x.png" />
+    <Content Include="Assets\gh-pages\images\blockquote-gfx.png" />
+    <Content Include="Assets\gh-pages\images\chevron-2x.png" />
+    <Content Include="Assets\gh-pages\images\chevron.png" />
+    <Content Include="Assets\gh-pages\images\download-fallback-bg.png" />
+    <Content Include="Assets\gh-pages\images\download-sprite.png" />
+    <Content Include="Assets\gh-pages\images\footer-ramp.jpg" />
+    <Content Include="Assets\gh-pages\images\fork-sprite.png" />
+    <Content Include="Assets\gh-pages\images\hr-2x.jpg" />
+    <Content Include="Assets\gh-pages\images\hr.jpg" />
+    <Content Include="Assets\gh-pages\images\octocat-2x.png" />
+    <Content Include="Assets\gh-pages\images\octocat.png" />
+    <Content Include="Assets\gh-pages\images\ribbon-tail-sprite-2x.png" />
+    <Content Include="Assets\gh-pages\images\ribbon-tail-sprite.png" />
+    <Content Include="Assets\gh-pages\images\shield-fallback.png" />
+    <Content Include="Assets\gh-pages\images\shield.png" />
+    <Content Include="Assets\gh-pages\images\site-2.png" />
+    <Content Include="Assets\gh-pages\images\small-ribbon-tail-sprite-2x.png" />
+    <Content Include="Assets\gh-pages\images\small-ribbon-tail-sprite.png" />
+    <Content Include="Assets\gh-pages\index.html" />
+    <Content Include="Assets\gh-pages\javascripts\headsmart.min.js" />
+    <Content Include="Assets\gh-pages\javascripts\main.js" />
+    <Content Include="Assets\gh-pages\javascripts\modernizr.js" />
+    <Content Include="Assets\gh-pages\stylesheets\core.css" />
+    <Content Include="Assets\gh-pages\stylesheets\mobile.css" />
+    <Content Include="Assets\gh-pages\stylesheets\non-screen.css" />
+    <Content Include="Assets\gh-pages\stylesheets\print.css" />
+    <Content Include="Assets\gh-pages\stylesheets\pygment_trac.css" />
+    <Content Include="Assets\gh-pages\stylesheets\screen.css" />
     <Content Include="Assets\Tiles\FlipCycleTileLarge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

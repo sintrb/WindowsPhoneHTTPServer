@@ -57,6 +57,7 @@ namespace HTTPServer
                 <p>It's a simple web page, if you can saw this page, it's mean your Windows Phone was provided a HTTP service correct.<a href='/hi'>Say hi~~</a></p>
                     <a href='https://github.com/sintrb/WindowsPhoneHTTPServer'>https://github.com/sintrb/WindowsPhoneHTTPServer</a>
                 </body>
+                <p><a href='/index.html'>Open The Test Static Web Page</a></p>
                 </html>
                 ";
                 cxt.Response.Body = Encoding.UTF8.GetBytes(html);
@@ -103,6 +104,21 @@ namespace HTTPServer
                     Storages[cxt.Request.Header.Path] = cxt.Request.Body;
                 }
 
+                LogReq(cxt);
+            });
+
+            //  StaticFileHandler: gh-pages
+            Sin.Http.Server.StaticFileHandler sfh = new Sin.Http.Server.StaticFileHandler()
+            {
+                Prefix = "Assets\\gh-pages"
+            };
+
+            //Server.On("(.*)", sfh);
+
+            // for log it, warp the sfh
+            Server.On("(.*)", cxt =>
+            {
+                sfh.GET(cxt);
                 LogReq(cxt);
             });
 
