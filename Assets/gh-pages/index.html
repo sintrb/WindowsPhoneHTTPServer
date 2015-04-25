@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640">
+
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Windows Phone Http Server by sintrb</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/sintrb/WindowsPhoneHTTPServer">View on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Windowsphonehttpserver</h1>
+            <h2>A Simple HTTP Server Framework &amp; Demo for Windows Phone 8 (WP8)</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/sintrb/WindowsPhoneHTTPServer/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/sintrb/WindowsPhoneHTTPServer/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
+
+
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
+        <h1>
+<a id="windows-phone-http-server" class="anchor" href="#windows-phone-http-server" aria-hidden="true"><span class="octicon octicon-link"></span></a>Windows Phone HTTP Server</h1>
+
+<p>A Simple HTTP Server Framework &amp; Demo for Windows Phone 8</p>
+
+<h4>
+<a id="how-to-use-it" class="anchor" href="#how-to-use-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to use it</h4>
+
+<div class="highlight highlight-C#"><pre><span class="pl-c">// Create Server at port 8080</span>
+Sin.Http.Server.Server Server = <span class="pl-k">new</span> Sin.Http.Server.Server() { Port = <span class="pl-c1">8080</span> };
+
+
+<span class="pl-c">// Config Router</span>
+<span class="pl-c">// When /</span>
+Server.On(<span class="pl-s"><span class="pl-pds">"</span>^/$<span class="pl-pds">"</span></span>, cxt =&gt;
+{
+    <span class="pl-c">// Return a simple page</span>
+    String html = @<span class="pl-s"><span class="pl-pds">"</span></span>
+<span class="pl-s">    &lt;!DOCTYPE html&gt;</span>
+<span class="pl-s">    &lt;html&gt;</span>
+<span class="pl-s">    &lt;head&gt;</span>
+<span class="pl-s">    &lt;meta charset='utf-8'&gt;</span>
+<span class="pl-s">    &lt;title&gt;Windows Phone HTTP Server&lt;/title&gt;</span>
+<span class="pl-s">    &lt;/head&gt;</span>
+<span class="pl-s">    &lt;body&gt;</span>
+<span class="pl-s">    &lt;h1&gt;Welcome to Windows Phone HTTP Server&lt;/h1&gt;</span>
+<span class="pl-s">    &lt;p&gt;It's a simple web page, if you can saw this page, it's mean your Windows Phone was provided a HTTP service correct.&lt;a href='/hi'&gt;Say hi~~&lt;/a&gt;&lt;/p&gt;</span>
+<span class="pl-s">        &lt;a href='https://github.com/sintrb/WindowsPhoneHTTPServer'&gt;https://github.com/sintrb/WindowsPhoneHTTPServer&lt;/a&gt;</span>
+<span class="pl-s">    &lt;/body&gt;</span>
+<span class="pl-s">    &lt;/html&gt;</span>
+<span class="pl-s">    <span class="pl-pds">"</span></span>;
+    cxt.Response.Body = Encoding.UTF8.GetBytes(html);
+});
+
+<span class="pl-c">// When /hi</span>
+Server.On(<span class="pl-s"><span class="pl-pds">"</span>^/hi$<span class="pl-pds">"</span></span>, cxt =&gt;
+{
+    cxt.Response.Body = Encoding.UTF8.GetBytes(<span class="pl-s"><span class="pl-pds">"</span>Hello World.....<span class="pl-pds">"</span></span>);
+});
+
+<span class="pl-c">// at last</span>
+<span class="pl-c">// Start it</span>
+Server.Start();</pre></div>
+
+<p>Then, use your PC broswer to open the url http://your-wp-ip:8080/ and Enjoy it.</p>
+
+<p>Maybe you can add other function to it, please fork it first.</p>
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/sintrb">sintrb</a> can be found on <a href="https://github.com/sintrb/WindowsPhoneHTTPServer">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="https://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
